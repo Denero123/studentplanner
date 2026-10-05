@@ -1,0 +1,119 @@
+{
+  "users": [
+    {
+      "id": "f0697711-3224-49c9-9bb7-b85d7373074f",
+      "name": "Cyber Student",
+      "email": "cyber.student@example.com",
+      "password_hash": "2b46f479b68fc63054839b25f4a00c40dae8cf169a5bd47738e20832e86dec444665a4602c7740a057c7f8c611d0a926b029c5ee331e3419008ba374661e1965",
+      "salt": "1790b64db6dbdfe019d937c5ded0b77c",
+      "email_verified": true,
+      "otp_code": null,
+      "otp_expires_at": null,
+      "otp_last_sent_at": 1790426714198,
+      "otp_attempts": 0,
+      "created_at": "2026-09-26T12:45:14.198Z"
+    }
+  ],
+  "study_plans": [
+    {
+      "id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "user_id": "f0697711-3224-49c9-9bb7-b85d7373074f",
+      "title": "Data Structures & Algorithms - Final Exam Prep",
+      "subject": "Computer Science",
+      "deadline": "2026-10-10",
+      "daily_hours": 2,
+      "difficulty": "intermediate",
+      "summary": "A 2-week intensive master schedule covering dynamic programming, graph algorithms, trees, and time complexity with daily practice problems.",
+      "created_at": "2026-09-26T12:45:14.218Z",
+      "updated_at": "2026-09-26T12:45:14.218Z"
+    }
+  ],
+  "topics": [
+    {
+      "id": "14994740-d50d-4f31-aeb4-f63412778067",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "name": "Graph Traversals (BFS & DFS)",
+      "created_at": "2026-09-26T12:45:14.218Z"
+    },
+    {
+      "id": "0b32d4a5-5095-483a-a39a-25b50fa6560a",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "name": "Dynamic Programming & Memoization",
+      "created_at": "2026-09-26T12:45:14.218Z"
+    },
+    {
+      "id": "bdaddb7d-ba0d-4d40-a005-5462b63f7c0d",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "name": "Binary Search Trees & Heaps",
+      "created_at": "2026-09-26T12:45:14.218Z"
+    },
+    {
+      "id": "d25c4e78-d4f9-4102-8509-45f8d2bf07ef",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "name": "System Design & Space Complexity",
+      "created_at": "2026-09-26T12:45:14.218Z"
+    }
+  ],
+  "study_tasks": [
+    {
+      "id": "47625c6c-5ef2-4495-9415-75cc05cd63df",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "topic": "Graph Traversals (BFS & DFS)",
+      "task": "Study adjacency lists vs matrices & implement recursive DFS in code",
+      "date": "2026-09-26",
+      "duration_minutes": 60,
+      "task_type": "learning",
+      "priority": "high",
+      "completed": true,
+      "completed_at": "2026-09-26T12:45:14.218Z",
+      "created_at": "2026-09-26T12:45:14.218Z"
+    },
+    {
+      "id": "0e436d43-f3f3-4083-ba6b-6bef5c3dd551",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "topic": "Graph Traversals (BFS & DFS)",
+      "task": "Solve 3 LeetCode graph problems (Number of Islands, Course Schedule)",
+      "date": "2026-09-26",
+      "duration_minutes": 60,
+      "task_type": "practice",
+      "priority": "high",
+      "completed": false,
+      "completed_at": null,
+      "created_at": "2026-09-26T12:45:14.218Z"
+    },
+    {
+      "id": "b1628bf9-6a4f-48a5-b5c6-77a09ced90e7",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "topic": "Dynamic Programming & Memoization",
+      "task": "Master 1D DP patterns (House Robber, Coin Change) with recurrence relations",
+      "date": "2026-09-27",
+      "duration_minutes": 75,
+      "task_type": "learning",
+      "priority": "high",
+      "completed": false,
+      "completed_at": null,
+      "created_at": "2026-09-26T12:45:14.218Z"
+    },
+    {
+      "id": "c9c90299-914a-4d42-8489-b8ba6b447ee5",
+      "plan_id": "7aa39202-e502-4c67-9f14-33dee2149664",
+      "topic": "Binary Search Trees & Heaps",
+      "task": "Review min/max heap invariants and priority queue applications",
+      "date": "2026-09-28",
+      "duration_minutes": 60,
+      "task_type": "revision",
+      "priority": "medium",
+      "completed": false,
+      "completed_at": null,
+      "created_at": "2026-09-26T12:45:14.218Z"
+    }
+  ],
+  "sessions": [
+    {
+      "token": "f92cb55de989755cc307b7d0bab699db7fd55ddcf8875ccb15eb3c7098df04b6",
+      "user_id": "f0697711-3224-49c9-9bb7-b85d7373074f",
+      "expires_at": 1793018714212,
+      "created_at": "2026-09-26T12:45:14.212Z"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Studyforge",
+  "description": "Your AI-powered study plan, built around your time and your goals. Create personalized schedules based on subjects, deadlines, and learning styles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
