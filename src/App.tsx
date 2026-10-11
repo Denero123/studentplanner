@@ -13,7 +13,6 @@ import { CreatePlanPage } from './components/planner/CreatePlanPage';
 import { PlanDetailPage } from './components/planner/PlanDetailPage';
 import { SettingsPage } from './components/settings/SettingsPage';
 import { RoutinePage } from './components/routine/RoutinePage';
-import { OfferingPlannerPage } from './components/planner/OfferingPlannerPage';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 function AppContent() {
@@ -52,7 +51,6 @@ function AppContent() {
     return (
       path === '/dashboard' ||
       path === '/dashboard/routine' ||
-      path === '/dashboard/offering-planner' ||
       path === '/study-plans/new' ||
       path.startsWith('/study-plans/') ||
       path === '/settings'
@@ -65,7 +63,7 @@ function AppContent() {
         <div className="flex flex-col items-center gap-3">
           <RefreshCw className="w-8 h-8 animate-spin text-indigo-600" />
           <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
-            Initializing StudyFlow AI...
+            Initializing StudyForge AI...
           </p>
         </div>
       </div>
@@ -122,8 +120,6 @@ function AppContent() {
     pageContent = <DashboardPage navigate={navigate} />;
   } else if (currentPath === '/dashboard/routine') {
     pageContent = <RoutinePage navigate={navigate} />;
-  } else if (currentPath === '/dashboard/offering-planner') {
-    pageContent = <OfferingPlannerPage navigate={navigate} />;
   } else if (currentPath === '/study-plans/new') {
     pageContent = <CreatePlanPage navigate={navigate} />;
   } else if (currentPath.startsWith('/study-plans/')) {
@@ -155,22 +151,26 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors selection:bg-indigo-500 selection:text-white">
       <Navbar currentPath={currentPath} navigate={navigate} />
-      <main className="flex-1">{pageContent}</main>
+      <main className="flex-1">
+        {pageContent}
+      </main>
       <Footer navigate={navigate} />
     </div>
   );
 }
 
-export default function App() {
+export function App() {
   return (
     <ThemeProvider>
-      <ToastProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <ToastProvider>
           <AppContent />
-        </AuthProvider>
-      </ToastProvider>
+        </ToastProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
+
+export default App;

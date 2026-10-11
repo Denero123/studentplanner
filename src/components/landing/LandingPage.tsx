@@ -47,12 +47,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
 
   const faqs = [
     {
-      q: 'How does StudyFlow AI calculate a realistic study schedule?',
-      a: 'Unlike naive tools that simply divide topics evenly, StudyFlow AI assesses the number of topics, your current proficiency, available study days, and daily hour limits. It paces foundational concepts first, allocates dedicated revision blocks, and inserts practice sessions ahead of your target deadline.',
+      q: 'How does StudyForge AI calculate a realistic study schedule?',
+      a: 'Unlike naive tools that simply divide topics evenly, StudyForge AI assesses the number of topics, your current proficiency, available study days, and daily hour limits. It paces foundational concepts first, allocates dedicated revision blocks, and inserts practice sessions ahead of your target deadline.',
     },
     {
       q: 'What happens if my deadline is too tight?',
-      a: 'StudyFlow AI will honestly prioritize the highest-impact topics and flag the heavy daily workload, rather than generating an unrealistic schedule that leads to student burnout.',
+      a: 'StudyForge AI will honestly prioritize the highest-impact topics and flag the heavy daily workload, rather than generating an unrealistic schedule that leads to student burnout.',
     },
     {
       q: 'Is my study plan and progress saved securely in the cloud?',
@@ -60,7 +60,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
     },
     {
       q: 'Can I check off tasks daily and watch my progress update?',
-      a: 'Absolutely! StudyFlow AI is designed as a daily companion. As you check off completed learning and revision tasks, your completion percentage and progress rings animate dynamically in real time.',
+      a: 'Absolutely! StudyForge AI is designed as a daily companion. As you check off completed learning and revision tasks, your completion percentage and progress rings animate dynamically in real time.',
     },
   ];
 

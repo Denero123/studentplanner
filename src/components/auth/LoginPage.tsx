@@ -30,7 +30,7 @@ export const LoginPage: React.FC<{ navigate: (path: string) => void }> = ({ navi
         password,
       });
 
-      success('Welcome back to StudyFlow AI!');
+      success('Welcome back to StudyForge AI!');
       navigate('/dashboard');
     } catch (err: any) {
       const msg = err.message || 'Invalid email or password. Please try again.';

@@ -3,10 +3,10 @@
  * Modifying this file rebrands the entire application without touching logic.
  */
 export const SITE_CONFIG = {
-  name: 'Studyforge',
+  name: 'StudyForge',
   tagline: 'Your AI-powered study plan, built around your time and your goals.',
   description:
-    'Studyforge is an AI-powered academic planning platform that converts a student\'s subjects, topics, deadline, and available study time into a realistic, structured, personalized study schedule—then tracks whether they actually follow it.',
+    'StudyForge is an AI-powered academic planning platform that converts a student\'s subjects, topics, deadline, and available study time into a realistic, structured, personalized study schedule—then tracks whether they actually follow it.',
   heroHeadline: 'Study Smarter. Plan Better. Achieve More.',
   heroSubheadline:
     'Create a personalized study plan with AI based on your subjects, deadlines, available time, and learning goals.',

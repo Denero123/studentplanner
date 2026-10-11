@@ -135,9 +135,9 @@ export const PlanDetailPage: React.FC<PlanDetailPageProps> = ({ planId, navigate
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//StudyFlow AI//Study Session Calendar//EN',
+      'PRODID:-//StudyForge AI//Study Session Calendar//EN',
       'BEGIN:VEVENT',
-      `UID:study-session-${task.id || Math.random()}@studyflow.ai`,
+      `UID:study-session-${task.id || Math.random()}@studyforge.ai`,
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'}`,
       `DTSTART:${startDate}`,
       `DTEND:${endDate}`,
@@ -164,7 +164,7 @@ export const PlanDetailPage: React.FC<PlanDetailPageProps> = ({ planId, navigate
       const endDate = task.date ? task.date.replace(/-/g, '') + 'T100000Z' : new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
       return [
         'BEGIN:VEVENT',
-        `UID:study-session-${task.id || idx}@studyflow.ai`,
+        `UID:study-session-${task.id || idx}@studyforge.ai`,
         `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'}`,
         `DTSTART:${startDate}`,
         `DTEND:${endDate}`,
@@ -177,7 +177,7 @@ export const PlanDetailPage: React.FC<PlanDetailPageProps> = ({ planId, navigate
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//StudyFlow AI//Complete Study Plan Calendar//EN',
+      'PRODID:-//StudyForge AI//Complete Study Plan Calendar//EN',
       events,
       'END:VCALENDAR'
     ].join('\r\n');

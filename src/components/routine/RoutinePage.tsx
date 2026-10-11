@@ -215,7 +215,7 @@ Timetable text/notes: ${timetableText || 'Standard university timetable'}`,
 
   // Calendar URL builder for Google Calendar
   const getGoogleCalendarUrl = (item: RoutineItem) => {
-    const title = encodeURIComponent(`[StudyFlow] ${item.category}: ${item.activity}`);
+    const title = encodeURIComponent(`[StudyForge] ${item.category}: ${item.activity}`);
     const details = encodeURIComponent(`Daily Routine Period: ${item.period}\nCategory: ${item.category}\nActivity: ${item.activity}`);
     const todayStr = new Date().toISOString().split('-').join('');
     const dates = `${todayStr}T090000Z/${todayStr}T100000Z`;
@@ -229,13 +229,13 @@ Timetable text/notes: ${timetableText || 'Standard university timetable'}`,
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//StudyFlow AI//Daily Routine Scheduler//EN',
+      'PRODID:-//StudyForge AI//Daily Routine Scheduler//EN',
       'BEGIN:VEVENT',
-      `UID:${item.id}@studyflow.ai`,
+      `UID:${item.id}@studyforge.ai`,
       `DTSTAMP:${dateStr}`,
       `DTSTART:${dateStr}`,
       `SUMMARY:${item.category}: ${item.activity}`,
-      `DESCRIPTION:StudyFlow Autonomous Routine - ${item.period}\\nActivity: ${item.activity}`,
+      `DESCRIPTION:StudyForge Autonomous Routine - ${item.period}\\nActivity: ${item.activity}`,
       'END:VEVENT',
       'END:VCALENDAR'
     ].join('\r\n');
@@ -244,7 +244,7 @@ Timetable text/notes: ${timetableText || 'Standard university timetable'}`,
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `studyflow-routine-${item.category.toLowerCase()}.ics`);
+    link.setAttribute('download', `studyforge-routine-${item.category.toLowerCase()}.ics`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

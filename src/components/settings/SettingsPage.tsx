@@ -88,7 +88,7 @@ ON public.study_plans FOR SELECT USING (auth.uid() = user_id);`;
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white">Profile Information</h2>
-              <p className="text-xs text-slate-400">Your verified StudyFlow credentials</p>
+              <p className="text-xs text-slate-400">Your verified StudyForge credentials</p>
             </div>
           </div>
 

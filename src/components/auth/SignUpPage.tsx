@@ -58,7 +58,7 @@ export const SignUpPage: React.FC<{ navigate: (path: string) => void }> = ({ nav
         confirmPassword,
       });
 
-      success('Account created successfully! Welcome to StudyFlow AI.');
+      success('Account created successfully! Welcome to StudyForge AI.');
       navigate('/dashboard');
     } catch (err: any) {
       const msg = err.message || 'Registration failed. Please try again.';
