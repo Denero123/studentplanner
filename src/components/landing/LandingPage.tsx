@@ -69,7 +69,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
       {/* ──────────────── Hero Section ──────────────── */}
       <section className="relative pt-20 pb-28 md:pt-32 md:pb-36 overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url('https://i.ibb.co/8ndjryhv/Screenshot-2026-09-28-070103.png')` }}>
         {/* Dark backdrop overlay for text contrast */}
-        <div className="absolute inset-0 bg-[#0B0F19]/90 backdrop-blur-md"></div>
+        <div className="absolute inset-0 bg-slate-900/80 dark:bg-[#0B0F19]/90 backdrop-blur-md"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-6">
@@ -130,25 +130,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
 
           {/* ──────────────── Visually Convincing Live Product Preview ──────────────── */}
           <div className="mt-14 max-w-5xl mx-auto">
-            <div className="relative rounded-2xl bg-[#111827]/80 p-2 sm:p-3 shadow-2xl border border-slate-800 hover:border-indigo-500/40 transition-all duration-300">
+            <div className="relative rounded-2xl bg-white dark:bg-[#111827]/80 p-2 sm:p-3 shadow-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 transition-all duration-300">
               {/* Fake browser bar */}
-              <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800 bg-[#0B0F19] rounded-t-xl mb-3">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-[#0B0F19] rounded-t-xl mb-3">
                 <div className="flex items-center gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-rose-400"></div>
                   <div className="w-3 h-3 rounded-full bg-amber-400"></div>
                   <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
                 </div>
-                <div className="px-4 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-[11px] font-mono text-slate-300 flex items-center gap-1">
-                  <span>app.studyflow.ai/dashboard</span>
+                <div className="px-4 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[11px] font-mono text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                  <span>app.studyforge.ai/dashboard</span>
                 </div>
-                <div className="text-[11px] font-medium text-emerald-400 flex items-center gap-1">
+                <div className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                   Live Demo
                 </div>
               </div>
 
               {/* Product UI Simulation */}
-              <div className="bg-[#111827] rounded-xl p-5 sm:p-7 border border-slate-800 shadow-inner">
+              <div className="bg-white dark:bg-[#111827] rounded-xl p-5 sm:p-7 border border-slate-200 dark:border-slate-800 shadow-inner">
                 {/* Header inside preview */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
                   <div>

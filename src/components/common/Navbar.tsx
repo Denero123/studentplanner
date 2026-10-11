@@ -13,10 +13,8 @@ import {
   LayoutDashboard, 
   PlusCircle, 
   Settings as SettingsIcon,
-  ChevronDown,
-  Calendar
+  ChevronDown
 } from 'lucide-react';
-import { BookingModal } from './BookingModal';
 
 interface NavbarProps {
   currentPath: string;
@@ -28,8 +26,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-
-  const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
   const handleNav = (path: string) => {
     navigate(path);
@@ -45,8 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   };
 
   return (
-    <>
-      <nav className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/80 dark:border-slate-800 transition-colors">
+    <nav className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/80 dark:border-slate-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo & Subtle Credit */}
@@ -136,16 +131,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
 
           {/* Right Action Icons & Controls */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Schedule Booking Button */}
-            <button
-              onClick={() => setBookingModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 text-xs font-semibold transition-all flex items-center gap-1.5 shadow-sm"
-              title="Schedule inspection or long-term appointment up to 12 months ahead"
-            >
-              <Calendar className="w-4 h-4" />
-              <span>Schedule Booking</span>
-            </button>
-
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -344,7 +329,5 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
         </div>
       )}
     </nav>
-      <BookingModal isOpen={bookingModalOpen} onClose={() => setBookingModalOpen(false)} />
-    </>
   );
 };
