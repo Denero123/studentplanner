@@ -90,40 +90,96 @@ export const RoutinePage: React.FC<RoutinePageProps> = ({ navigate }) => {
 
   const handleGenerateRoutine = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token) {
-      toastError('Please sign in to generate and save your routine.');
-      navigate('/login');
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      toastError('Gemini API key is missing in production environment variables.');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await fetch('/api/generate-routine', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+      const { GoogleGenAI } = await import('@google/genai');
+      const ai = new GoogleGenAI({ apiKey });
+      const systemInstruction = `You are an expert academic advisor and autonomous daily routine scheduler.
+Analyze the student's timetable, wake-up time (${wakeUpTime || '06:30 AM'}), bedtime (${bedtime || '10:30 PM'}), priority topics (${priorityTopics || 'None'}), and study style (${studyStyle || 'morning'}).
+Return strict JSON with the following structure:
+{
+  "title": "string",
+  "date": "YYYY-MM-DD",
+  "wake_up_time": "string",
+  "bedtime": "string",
+  "study_style": "string",
+  "items": [
+    {
+      "id": "string",
+      "time_slot": "string",
+      "period": "Morning" | "Afternoon" | "Evening" | "Night",
+      "category": "Lecture" | "Study Session" | "Break" | "Pre-Sleep",
+      "activity": "string",
+      "is_class_time": boolean,
+      "completed": false
+    }
+  ]
+}
+Ensure there is a specific 30-45 minute Pre-Sleep Routine immediately before bedtime for active recall, reviewing notes, and screen-free wind-down. Fill daylight gaps between lectures with focused study blocks and rest.`;
+
+      const contents: any[] = [
+        {
+          text: `Generate an autonomous daily routine based on:
+Wake-up: ${wakeUpTime || '06:30 AM'}
+Bedtime: ${bedtime || '10:30 PM'}
+Priority Topics/Exams: ${priorityTopics || 'General study'}
+Study Style: ${studyStyle || 'morning'}
+Timetable text/notes: ${timetableText || 'Standard university timetable'}`,
+        }
+      ];
+
+      if (timetableImage) {
+        const matches = timetableImage.match(/^data:(.+);base64,(.+)$/);
+        if (matches) {
+          contents.push({
+            inlineData: {
+              mimeType: matches[1],
+              data: matches[2]
+            }
+          });
+        }
+      }
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents,
+        config: {
+          systemInstruction,
+          responseMimeType: 'application/json',
         },
-        body: JSON.stringify({
-          wakeUpTime,
-          bedtime,
-          priorityTopics,
-          studyStyle,
-          timetableText,
-          timetableImage
-        })
       });
 
-      const data = await res.json();
-      if (data.success && data.data) {
-        setRoutine(data.data);
-        setActiveTab('schedule');
-        success('Autonomous daily routine generated successfully!');
-      } else {
-        toastError(data.error || 'Failed to generate routine');
-      }
+      const text = response.text || '';
+      const routineData = JSON.parse(text);
+
+      routineData.items = routineData.items.map((item: any, idx: number) => ({
+        ...item,
+        id: item.id || `routine-item-${Date.now()}-${idx}`,
+        completed: !!item.completed
+      }));
+
+      const newRoutine = {
+        id: 'routine-' + Date.now(),
+        title: routineData.title || 'Autonomous Daily Routine',
+        date: routineData.date || new Date().toISOString().split('T')[0],
+        wake_up_time: wakeUpTime || routineData.wake_up_time || '06:30 AM',
+        bedtime: bedtime || routineData.bedtime || '10:30 PM',
+        study_style: studyStyle || routineData.study_style || 'morning',
+        items: routineData.items
+      };
+
+      setRoutine(newRoutine);
+      setActiveTab('schedule');
+      success('Autonomous daily routine generated successfully!');
     } catch (err: any) {
-      toastError(err.message || 'Network error while generating routine');
+      console.error('Failed to parse Gemini output:', err);
+      toastError(err.message || 'Unable to parse the generated routine. Please try again.');
     } finally {
       setLoading(false);
     }

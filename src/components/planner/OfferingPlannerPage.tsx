@@ -48,33 +48,68 @@ export const OfferingPlannerPage: React.FC<OfferingPlannerPageProps> = ({ naviga
       return;
     }
 
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      toastError('Gemini API key is missing in production environment variables.');
+      return;
+    }
+
     setIsGenerating(true);
     try {
-      const res = await fetch('/api/generate-offering-plan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          offeringDescription,
-          targetAudience,
-          durationWeeks,
-          hoursPerWeek,
-          pricingModel
-        })
+      const { GoogleGenAI } = await import('@google/genai');
+      const ai = new GoogleGenAI({ apiKey });
+      const weeks = Number(durationWeeks) || 4;
+      const hrs = Number(hoursPerWeek) || 5;
+      const audience = targetAudience || 'Clients & Students';
+      const pricing = pricingModel || 'Hourly / Session Based';
+
+      const prompt = `You are an expert business coach, curriculum architect, and service operations planner.
+A user is offering the following service/product/course:
+"${offeringDescription.trim()}"
+
+Target Audience: ${audience}
+Duration: ${weeks} weeks
+Commitment: ${hrs} hours/week
+Pricing/Delivery Model: ${pricing}
+
+Create a comprehensive structured offering plan and schedule in strict JSON format matching this schema:
+{
+  "offering_title": "Catchy professional title for the offering",
+  "category": "Service / Course / Consultation / Inspection / Product",
+  "target_audience": "Refined target audience description",
+  "strategy_summary": "Detailed strategic overview of how to structure, price, deliver, and market this offering for success",
+  "milestones": [
+    "Milestone 1 description",
+    "Milestone 2 description",
+    "Milestone 3 description"
+  ],
+  "tasks": [
+    {
+      "date": "YYYY-MM-DD",
+      "phase": "Phase 1: Setup & Onboarding / Phase 2: Core Delivery / Phase 3: Review & Scale",
+      "action": "Actionable task for this delivery block",
+      "duration_minutes": 60,
+      "priority": "high"
+    }
+  ]
+}
+Generate at least 8 to 12 realistic actionable tasks distributed across the ${weeks} weeks, starting from today's date (${new Date().toISOString().split('T')[0]}).`;
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents: prompt,
+        config: { responseMimeType: 'application/json' },
       });
 
-      const data = await res.json();
-      if (data.success && data.data) {
-        setPlanResult(data.data);
-        setCompletedTasks({});
-        success('AI Offering & Scheduling Strategy generated successfully!');
-      } else {
-        toastError(data.error || 'Failed to generate offering plan.');
-      }
+      const text = response.text || '';
+      const planData = JSON.parse(text);
+
+      setPlanResult(planData);
+      setCompletedTasks({});
+      success('AI Offering & Scheduling Strategy generated successfully!');
     } catch (err: any) {
-      toastError(err.message || 'Network error while generating offering plan.');
+      console.error('Failed to parse Gemini output:', err);
+      toastError(err.message || 'Unable to parse the generated offering plan. Please try again.');
     } finally {
       setIsGenerating(false);
     }
