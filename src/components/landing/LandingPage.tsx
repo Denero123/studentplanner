@@ -9,16 +9,16 @@ import {
   Target, 
   BarChart3, 
   Database, 
-  Layers, 
   ShieldCheck, 
   Zap, 
   BookOpen, 
-  ChevronRight, 
   ChevronDown,
   Brain,
-  Star,
   Flame,
-  Award
+  Search,
+  Terminal,
+  Code2,
+  FileCode
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -27,6 +27,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Mock interactive state for hero dashboard preview
   const [heroTaskState, setHeroTaskState] = useState([
@@ -45,14 +46,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
     );
   };
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate('/study-plans/new');
+    }
+  };
+
   const faqs = [
     {
-      q: 'How does StudyForge AI calculate a realistic study schedule?',
-      a: 'Unlike naive tools that simply divide topics evenly, StudyForge AI assesses the number of topics, your current proficiency, available study days, and daily hour limits. It paces foundational concepts first, allocates dedicated revision blocks, and inserts practice sessions ahead of your target deadline.',
+      q: 'How does Studyforge AI calculate a realistic study schedule?',
+      a: 'Unlike naive tools that simply divide topics evenly, Studyforge AI assesses the number of topics, your current proficiency, available study days, and daily hour limits. It paces foundational concepts first, allocates dedicated revision blocks, and inserts practice sessions ahead of your target deadline.',
     },
     {
       q: 'What happens if my deadline is too tight?',
-      a: 'StudyForge AI will honestly prioritize the highest-impact topics and flag the heavy daily workload, rather than generating an unrealistic schedule that leads to student burnout.',
+      a: 'Studyforge AI will honestly prioritize the highest-impact topics and flag the heavy daily workload, rather than generating an unrealistic schedule that leads to student burnout.',
     },
     {
       q: 'Is my study plan and progress saved securely in the cloud?',
@@ -60,101 +68,130 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
     },
     {
       q: 'Can I check off tasks daily and watch my progress update?',
-      a: 'Absolutely! StudyForge AI is designed as a daily companion. As you check off completed learning and revision tasks, your completion percentage and progress rings animate dynamically in real time.',
+      a: 'Absolutely! Studyforge is designed as a daily companion. As you check off completed learning and revision tasks, your completion percentage and progress rings animate dynamically in real time.',
     },
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#0B0F17] text-slate-100 selection:bg-teal-500 selection:text-slate-950">
       {/* ──────────────── Hero Section ──────────────── */}
-      <section className="relative pt-20 pb-28 md:pt-32 md:pb-36 overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url('https://i.ibb.co/8ndjryhv/Screenshot-2026-09-28-070103.png')` }}>
-        {/* Dark backdrop overlay for text contrast */}
-        <div className="absolute inset-0 bg-slate-900/85 dark:bg-[#0B0F19]/90 backdrop-blur-md"></div>
+      <section className="relative pt-20 pb-28 md:pt-32 md:pb-36 overflow-hidden bg-[#0B0F17]">
+        {/* Dual Soft Radial Gradient Backdrops behind hero title */}
+        <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-teal-500/15 rounded-full blur-[120px] pointer-events-none animate-pulse-glow" />
+        <div className="absolute top-1/3 right-1/4 translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[140px] pointer-events-none animate-drift" />
+
+        {/* Subtle floating tech/developer watermarks scattered in background */}
+        <div className="absolute top-12 left-10 text-slate-500 font-mono text-xs opacity-10 pointer-events-none select-none animate-float-slow">{"{}"}</div>
+        <div className="absolute top-28 right-16 text-slate-500 font-mono text-xs opacity-10 pointer-events-none select-none animate-float-reverse">{"</>"}</div>
+        <div className="absolute bottom-20 left-20 text-slate-500 font-mono text-xs opacity-10 pointer-events-none select-none animate-float-slow">{"<js>"}</div>
+        <div className="absolute top-1/2 right-10 text-slate-500 font-mono text-xs opacity-10 pointer-events-none select-none animate-drift">{"div"}</div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto space-y-6">
+          <div className="text-center max-w-4xl mx-auto space-y-6">
             {/* Pill announcement */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shadow-sm animate-fade-in">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Next-Gen Academic Pacing Engine</span>
-              <span className="w-1 h-1 rounded-full bg-indigo-400"></span>
-              <span className="text-slate-300 font-normal">Real-Time Progress Tracking</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-teal-500/10 text-teal-300 border border-teal-500/25 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+              <span>Next-Gen Developer & Student Learning Engine</span>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]">
-              {SITE_CONFIG.heroHeadline}
+            {/* Headline with Multi-Colored Split Gradient */}
+            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-center leading-[1.12]">
+              <span className="text-white">Master Your Courses with </span>
+              <span className="bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 bg-clip-text text-transparent">
+                StudyForge
+              </span>
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
-              {SITE_CONFIG.heroSubheadline}
+            {/* Subtitle */}
+            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mt-4 text-center leading-relaxed">
+              Curated engineering summaries, AI study routines, and exam prep guides tailored specifically for university students.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
+            {/* Hero CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <button
                 onClick={() => navigate('/study-plans/new')}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:opacity-95 text-white font-bold text-base shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group focus:outline-none"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2 transition-all active:scale-95 group"
               >
-                <span>Create My Study Plan</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <span>Create Study Plan</span>
+                <ArrowRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 onClick={() => {
                   const el = document.getElementById('how-it-works');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold text-base border border-slate-700 shadow-sm transition-all focus:outline-none"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#162035] hover:bg-[#1C2944] text-white font-medium border border-white/10 flex items-center justify-center space-x-2 transition-all active:scale-95"
               >
-                See How It Works
+                <FileCode className="w-4 h-4 text-teal-400" />
+                <span>Explore Notes</span>
               </button>
             </div>
 
+            {/* Hero Search Bar Component */}
+            <form onSubmit={handleSearchSubmit} className="max-w-2xl mx-auto mt-10 bg-[#0F172A]/90 border border-white/10 rounded-2xl p-2 flex items-center shadow-2xl focus-within:border-teal-500/50 transition-all">
+              <Search className="w-5 h-5 text-slate-500 ml-3 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search course codes, past questions, and AI plans..."
+                className="bg-transparent border-none text-slate-200 placeholder-slate-500 focus:outline-none flex-1 px-3 text-sm"
+              />
+              <button
+                type="submit"
+                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs px-4 py-2.5 rounded-xl flex items-center space-x-1 transition-all shrink-0"
+              >
+                <span>Search</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </form>
+
             {/* Social proof chips */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-y-2 gap-x-6 text-xs text-slate-400 font-medium">
+            <div className="pt-6 flex flex-wrap items-center justify-center gap-y-2 gap-x-6 text-xs text-slate-400 font-medium">
               <span className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 Zero guesswork scheduling
               </span>
               <span className="flex items-center gap-1.5">
-                <Target className="w-4 h-4 text-indigo-400" />
+                <Target className="w-4 h-4 text-teal-400" />
                 Personalized topic pacing
               </span>
               <span className="flex items-center gap-1.5">
-                <Zap className="w-4 h-4 text-amber-400" />
+                <Zap className="w-4 h-4 text-purple-400" />
                 Dynamic progress feedback
               </span>
             </div>
           </div>
 
           {/* ──────────────── Visually Convincing Live Product Preview ──────────────── */}
-          <div className="mt-14 max-w-5xl mx-auto">
-            <div className="relative rounded-3xl bg-[#111827]/90 backdrop-blur-md p-2 sm:p-3 shadow-2xl border border-white/[0.08]">
+          <div className="mt-16 max-w-5xl mx-auto">
+            <div className="relative rounded-3xl bg-[#0F1626]/80 backdrop-blur-md p-2 sm:p-3 shadow-2xl border border-white/[0.08]">
               {/* Fake browser bar */}
-              <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.08] bg-[#0B0F19] rounded-t-2xl mb-3">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.08] bg-[#06090F] rounded-t-2xl mb-3">
                 <div className="flex items-center gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-rose-500/80"></div>
                   <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
                   <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
                 </div>
-                <div className="px-4 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-300 flex items-center gap-1">
-                  <span>app.studyforge.ai/dashboard</span>
+                <div className="px-4 py-0.5 rounded-md bg-[#0F172A] border border-white/5 text-[11px] font-mono text-slate-300 flex items-center gap-1">
+                  <Terminal className="w-3 h-3 text-teal-400" />
+                  <span>app.studyforge.dev/dashboard</span>
                 </div>
                 <div className="text-[11px] font-medium text-emerald-400 flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Live Demo
+                  Live Preview
                 </div>
               </div>
 
               {/* Product UI Simulation */}
-              <div className="bg-[#111827] rounded-2xl p-5 sm:p-7 border border-white/[0.08] shadow-inner text-white">
+              <div className="bg-[#131C31] rounded-2xl p-5 sm:p-7 border border-white/[0.08] shadow-inner text-white">
                 {/* Header inside preview */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
                   <div>
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                       Computer Science · Exam Prep
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20 font-semibold">
                         Active Plan
                       </span>
                     </h2>
@@ -173,7 +210,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
                   <div className="flex items-center gap-3">
                     <div className="text-right">
                       <span className="text-xs text-slate-400 block font-medium">Overall Pacing</span>
-                      <span className="text-xl font-bold text-indigo-400">
+                      <span className="text-xl font-bold text-teal-400">
                         {heroProgress}% Done
                       </span>
                     </div>
@@ -188,7 +225,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
                           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                         <path
-                          className="text-indigo-400 transition-all duration-500 ease-out"
+                          className="text-teal-400 transition-all duration-500 ease-out"
                           strokeDasharray={`${heroProgress}, 100`}
                           strokeWidth="3.5"
                           strokeLinecap="round"
@@ -197,7 +234,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
                           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                       </svg>
-                      <CheckCircle2 className="w-4 h-4 absolute text-indigo-400" />
+                      <CheckCircle2 className="w-4 h-4 absolute text-teal-400" />
                     </div>
                   </div>
                 </div>
@@ -222,7 +259,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
                         className={`cursor-pointer p-3.5 rounded-xl border transition-all flex items-center justify-between gap-3 group ${
                           task.completed
                             ? 'bg-emerald-500/10 border-emerald-500/30 text-slate-400'
-                            : 'bg-slate-900/90 border-white/[0.08] hover:border-indigo-500/40 hover:bg-[#161F36]/90'
+                            : 'bg-[#0F172A] border-white/[0.08] hover:border-teal-500/40 hover:bg-[#162035]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -230,7 +267,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
                             className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
                               task.completed
                                 ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-bold'
-                                : 'border-slate-700 group-hover:border-indigo-400'
+                                : 'border-slate-700 group-hover:border-teal-400'
                             }`}
                           >
                             {task.completed && <CheckCircle2 className="w-4 h-4 text-slate-950" />}
@@ -255,7 +292,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
                         <span
                           className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                             task.tag === 'Learning'
-                              ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                              ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                               : task.tag === 'Practice'
                               ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                               : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
@@ -274,62 +311,62 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
       </section>
 
       {/* ──────────────── How It Works (3 Steps) ──────────────── */}
-      <section id="how-it-works" className="py-20 bg-slate-50/50 dark:bg-slate-900/30 border-y border-slate-200/80 dark:border-white/[0.08] transition-colors">
+      <section id="how-it-works" className="py-20 bg-[#06090F] border-y border-white/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-teal-400">
               Methodology
             </h2>
-            <p className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <p className="mt-2 text-3xl font-extrabold text-white tracking-tight">
               From academic overwhelm to structured execution in 3 steps
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {/* Step 1 */}
-            <div className="card-surface rounded-2xl p-7 relative">
-              <div className="text-3xl font-black text-indigo-600/30 dark:text-indigo-400/20 font-mono mb-4">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] rounded-2xl p-7 relative">
+              <div className="text-3xl font-black text-teal-400/20 font-mono mb-4">
                 01
               </div>
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 border border-indigo-500/20">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center mb-4 border border-teal-500/20">
                 <Target className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-white mb-2">
                 Tell Us Your Goals
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Enter your subject, key topics, exam deadline, and available daily hours. Select which days you can study and your current proficiency level.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="card-surface rounded-2xl p-7 relative">
-              <div className="text-3xl font-black text-indigo-600/30 dark:text-indigo-400/20 font-mono mb-4">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] rounded-2xl p-7 relative">
+              <div className="text-3xl font-black text-purple-500/20 font-mono mb-4">
                 02
               </div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-4 border border-cyan-500/20">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4 border border-purple-500/20">
                 <Brain className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-white mb-2">
                 AI Builds Your Plan
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Our AI considers topic difficulty, spacing intervals, and pre-deadline mock exams. It outputs an honest, balanced schedule with specific study tasks.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="card-surface rounded-2xl p-7 relative">
-              <div className="text-3xl font-black text-indigo-600/30 dark:text-indigo-400/20 font-mono mb-4">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] rounded-2xl p-7 relative">
+              <div className="text-3xl font-black text-emerald-400/20 font-mono mb-4">
                 03
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20">
                 <BarChart3 className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-white mb-2">
                 Track Your Progress
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Check off tasks as you finish them each day. Watch your completion percentage climb and stay on track until you ace your exams.
               </p>
             </div>
@@ -338,92 +375,92 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
       </section>
 
       {/* ──────────────── Features Section ──────────────── */}
-      <section id="features" className="py-24">
+      <section id="features" className="py-24 bg-[#0B0F17]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-teal-400">
               Core Capabilities
             </h2>
-            <p className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <p className="mt-2 text-3xl font-extrabold text-white tracking-tight">
               Engineered for academic success, not just task checklists
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="card-surface p-6 rounded-2xl">
-              <div className="w-11 h-11 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 border border-indigo-500/20">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] p-6 rounded-2xl">
+              <div className="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4 border border-purple-500/20">
                 <Brain className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-base font-bold text-white mb-2">
                 AI Study Planning
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Generates realistic schedules based on topic complexity, cognitive fatigue limits, and student study styles.
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="card-surface p-6 rounded-2xl">
-              <div className="w-11 h-11 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-4 border border-cyan-500/20">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] p-6 rounded-2xl">
+              <div className="w-11 h-11 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center mb-4 border border-teal-500/20">
                 <Calendar className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-base font-bold text-white mb-2">
                 Smart Scheduling
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Only schedules study sessions on days you have earmarked. Balances learning new concepts with mandatory revision windows.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="card-surface p-6 rounded-2xl">
-              <div className="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4 border border-purple-500/20">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] p-6 rounded-2xl">
+              <div className="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center mb-4 border border-sky-500/20">
                 <Target className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-base font-bold text-white mb-2">
                 Goal Tracking
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Keep sight of upcoming exam deadlines with countdown badges, daily task quotas, and overdue indicators.
               </p>
             </div>
 
             {/* Feature 4 */}
-            <div className="card-surface p-6 rounded-2xl">
-              <div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] p-6 rounded-2xl">
+              <div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-base font-bold text-white mb-2">
                 Task Completion
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 One-tap task toggles with immediate database synchronization and optimistic UI responsiveness.
               </p>
             </div>
 
             {/* Feature 5 */}
-            <div className="card-surface p-6 rounded-2xl">
-              <div className="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 border border-amber-500/20">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] p-6 rounded-2xl">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-4 border border-amber-500/20">
                 <BarChart3 className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-base font-bold text-white mb-2">
                 Progress Tracking
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Dynamically computed completion ratios and animated progress bars provide positive reinforcement as you work.
               </p>
             </div>
 
             {/* Feature 6 */}
-            <div className="card-surface p-6 rounded-2xl">
-              <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-4 border border-rose-500/20">
+            <div className="bg-[#0F1626]/80 border border-white/[0.08] p-6 rounded-2xl">
+              <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center mb-4 border border-rose-500/20">
                 <Database className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-base font-bold text-white mb-2">
                 Cloud-Saved Study Plans
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 Safely persisted in PostgreSQL with strict Row Level Security. Accessible anytime from your phone, tablet, or desktop.
               </p>
             </div>
@@ -432,13 +469,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
       </section>
 
       {/* ──────────────── FAQ Section ──────────────── */}
-      <section id="faq" className="py-20 bg-slate-50/50 dark:bg-slate-900/30 border-t border-slate-200 dark:border-white/[0.08] transition-colors">
+      <section id="faq" className="py-20 bg-[#06090F] border-t border-white/[0.08]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-xl mx-auto mb-12">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-teal-400">
               Questions & Answers
             </h2>
-            <p className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <p className="mt-2 text-3xl font-extrabold text-white tracking-tight">
               Frequently Asked Questions
             </p>
           </div>
@@ -447,21 +484,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
             {faqs.map((faq, idx) => (
               <div
                 key={idx}
-                className="card-surface rounded-2xl overflow-hidden transition-all"
+                className="bg-[#0F1626]/80 border border-white/[0.08] rounded-2xl overflow-hidden transition-all"
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  className="w-full text-left px-6 py-4 flex items-center justify-between gap-4 font-semibold text-slate-900 dark:text-white text-base focus:outline-none"
+                  className="w-full text-left px-6 py-4 flex items-center justify-between gap-4 font-semibold text-white text-base focus:outline-none"
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
                     className={`w-5 h-5 text-slate-400 transition-transform ${
-                      activeFaq === idx ? 'rotate-180 text-indigo-600 dark:text-indigo-400' : ''
+                      activeFaq === idx ? 'rotate-180 text-teal-400' : ''
                     }`}
                   />
                 </button>
                 {activeFaq === idx && (
-                  <div className="px-6 pb-5 pt-1 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-white/[0.08]">
+                  <div className="px-6 pb-5 pt-1 text-sm text-slate-400 leading-relaxed border-t border-white/[0.08]">
                     {faq.a}
                   </div>
                 )}
@@ -472,21 +509,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
       </section>
 
       {/* ──────────────── Final CTA ──────────────── */}
-      <section className="py-20 relative overflow-hidden bg-gradient-to-br from-indigo-900 via-indigo-950 to-[#0B0F19] text-white">
+      <section className="py-20 relative overflow-hidden bg-gradient-to-br from-teal-950 via-[#0B0F17] to-[#06090F] text-white border-t border-white/[0.08]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
             Ready to turn your academic goals into structured progress?
           </h2>
-          <p className="text-base sm:text-lg text-indigo-200 max-w-xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-300 max-w-xl mx-auto">
             Build your personalized, AI-calculated study plan in under 60 seconds and start tracking today.
           </p>
           <div className="pt-2">
             <button
               onClick={() => navigate('/study-plans/new')}
-              className="px-8 py-4 rounded-xl bg-white hover:bg-slate-100 text-indigo-900 font-bold text-base shadow-xl shadow-indigo-950/50 hover:scale-105 active:scale-100 transition-all inline-flex items-center gap-2"
+              className="px-8 py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base shadow-xl shadow-emerald-500/25 hover:scale-105 active:scale-100 transition-all inline-flex items-center gap-2"
             >
               <span>Get Started Now</span>
-              <ArrowRight className="w-5 h-5 text-indigo-600" />
+              <ArrowRight className="w-5 h-5 text-slate-950" />
             </button>
           </div>
         </div>

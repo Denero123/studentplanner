@@ -13,7 +13,13 @@ import {
   LayoutDashboard, 
   PlusCircle, 
   Settings as SettingsIcon,
-  ChevronDown
+  ChevronDown,
+  Terminal,
+  BookOpen,
+  FileText,
+  Compass,
+  CheckSquare,
+  ShoppingBag
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -44,293 +50,310 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   const userInitial = userName.charAt(0).toUpperCase();
 
   return (
-    <nav className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/80 dark:bg-[#0B0F19]/80 border-b border-slate-200/80 dark:border-white/[0.08] transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo & Subtle Credit */}
-          <div className="flex items-center gap-3">
-            <a href="https://imgbb.com/" target="_blank" rel="noopener noreferrer" className="flex items-center shrink-0" title="View screenshot on imgbb">
-              <img src="https://i.ibb.co/8ndjryhv/Screenshot-2026-09-28-070103.png" alt="Screenshot 2026 09 28 070103" className="w-8 h-8 rounded-lg object-cover border border-indigo-500/30 shadow-sm hover:scale-105 transition-transform" />
-            </a>
-            <button
-              onClick={() => handleNav('/')}
-              className="flex items-center gap-2.5 text-left group focus:outline-none"
-            >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  {SITE_CONFIG.name}
-                </span>
-                <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 tracking-wide uppercase">
-                  {SITE_CONFIG.credit}
-                </span>
-              </div>
-            </button>
-          </div>
+    <header className="sticky top-0 z-50 w-full flex flex-col">
 
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-6">
-            {!user ? (
-              <>
-                <button
-                  onClick={() => handleNav('/#how-it-works')}
-                  className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition-colors"
-                >
-                  How It Works
-                </button>
-                <button
-                  onClick={() => handleNav('/#features')}
-                  className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition-colors"
-                >
-                  Features
-                </button>
-                <button
-                  onClick={() => handleNav('/#faq')}
-                  className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition-colors"
-                >
-                  FAQ
-                </button>
-              </>
-            ) : (
-              <>
+
+      {/* Glassmorphic Navigation Bar */}
+      <nav className="w-full bg-[#0D1322]/90 backdrop-blur-md border-b border-white/10 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Left Logo */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleNav('/')}
+                className="flex items-center gap-3 text-left group focus:outline-none"
+              >
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-base font-extrabold tracking-tight text-white group-hover:text-purple-400 transition-colors leading-tight">
+                    StudyForge
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">
+                    MADE BY CYBER
+                  </span>
+                </div>
+              </button>
+            </div>
+
+            {/* Center Nav Links (Pill Style Track) */}
+            <div className="hidden lg:flex items-center">
+              <div className="bg-[#111A2E] p-1 rounded-xl flex items-center space-x-1 border border-white/5">
                 <button
                   onClick={() => handleNav('/dashboard')}
-                  className={`text-sm font-medium flex items-center gap-1.5 transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                     currentPath === '/dashboard'
-                      ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
-                      : 'text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400'
+                      ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  <LayoutDashboard className="w-4 h-4" />
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  Dashboard
+                </button>
+                <button
+                  onClick={() => handleNav('/notes')}
+                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                    currentPath === '/notes'
+                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Notes
+                </button>
+                <button
+                  onClick={() => handleNav('/study-plans/new')}
+                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                    currentPath === '/study-plans/new'
+                      ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Study Plans
+                </button>
+                <button
+                  onClick={() => handleNav(user ? '/dashboard' : '/auth')}
+                  className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-1.5"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  Past Questions
+                </button>
+                <button
+                  onClick={() => handleNav('/roadmap')}
+                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                    currentPath === '/roadmap'
+                      ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  Roadmaps
+                </button>
+                <button
+                  onClick={() => handleNav('/daily-practice')}
+                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                    currentPath === '/daily-practice'
+                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <CheckSquare className="w-3.5 h-3.5" />
+                  Daily Practice
+                </button>
+              </div>
+            </div>
+
+            {/* Right Action Buttons */}
+            <div className="hidden md:flex items-center gap-3">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2.5 rounded-xl text-slate-400 hover:text-white bg-[#111A2E] border border-white/5 transition-colors focus:outline-none"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-cyan-400" />}
+              </button>
+
+              {/* Bag / Profile Button */}
+              <button
+                onClick={() => handleNav(user ? '/dashboard' : '/auth')}
+                className="p-2.5 rounded-xl text-slate-400 hover:text-white bg-[#111A2E] border border-white/5 transition-colors focus:outline-none relative"
+                aria-label="Student bag"
+              >
+                <ShoppingBag className="w-4 h-4 text-purple-400" />
+              </button>
+
+              {/* Login / User Dropdown */}
+              {!user ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleNav('/auth')}
+                    className="px-4 py-2 text-sm rounded-xl text-slate-300 hover:text-white border border-slate-700/60 hover:border-slate-500 bg-[#111A2E] transition-all font-medium"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => handleNav('/study-plans/new')}
+                    className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-md shadow-emerald-500/20 transition-all transform hover:-translate-y-0.5"
+                  >
+                    Get Started
+                  </button>
+                </div>
+              ) : (
+                <div className="relative">
+                  <button
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111A2E] border border-white/10 hover:bg-slate-800 transition-colors focus:outline-none"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 text-slate-950 flex items-center justify-center font-bold text-xs shadow-sm">
+                      {userInitial}
+                    </div>
+                    <span className="text-xs font-semibold text-slate-200">
+                      {userName.split(' ')[0]}
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  </button>
+
+                  {userDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-[#0F1626] border border-white/10 rounded-2xl shadow-2xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-200">
+                      <div className="px-4 py-2.5 border-b border-white/10">
+                        <p className="text-xs text-slate-400">Signed in as</p>
+                        <p className="text-xs font-bold text-white truncate">{user.email}</p>
+                      </div>
+
+                      <button
+                        onClick={() => handleNav('/dashboard')}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/80 flex items-center gap-2"
+                      >
+                        <LayoutDashboard className="w-4 h-4 text-teal-400" />
+                        Dashboard
+                      </button>
+
+                      <button
+                        onClick={() => handleNav('/dashboard/routine')}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/80 flex items-center gap-2"
+                      >
+                        <CheckSquare className="w-4 h-4 text-emerald-400" />
+                        Daily Practice
+                      </button>
+
+                      <button
+                        onClick={() => handleNav('/study-plans/new')}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/80 flex items-center gap-2"
+                      >
+                        <PlusCircle className="w-4 h-4 text-purple-400" />
+                        New Study Plan
+                      </button>
+
+                      <button
+                        onClick={() => handleNav('/settings')}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/80 flex items-center gap-2"
+                      >
+                        <SettingsIcon className="w-4 h-4 text-slate-400" />
+                        Settings
+                      </button>
+
+                      <div className="border-t border-white/10 my-1" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-sm text-rose-400 hover:bg-rose-950/40 flex items-center gap-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile hamburger button */}
+            <div className="flex md:hidden items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl text-slate-400 hover:text-white bg-[#111A2E] border border-white/5 focus:outline-none"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-cyan-400" />}
+              </button>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-xl text-slate-300 hover:text-white bg-[#111A2E] border border-white/5"
+                aria-label="Toggle mobile menu"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Drawer Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-white/10 bg-[#0D1322]/95 backdrop-blur-md px-4 pt-4 pb-6 space-y-3">
+            {!user ? (
+              <div className="space-y-2">
+                <button
+                  onClick={() => handleNav('/dashboard')}
+                  className="w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800"
+                >
+                  Dashboard
+                </button>
+                <button
+                  onClick={() => handleNav('/study-plans/new')}
+                  className="w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800"
+                >
+                  Study Plans
+                </button>
+                <button
+                  onClick={() => handleNav('/dashboard/routine')}
+                  className="w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800"
+                >
+                  Daily Practice
+                </button>
+                <div className="pt-2 flex flex-col gap-2">
+                  <button
+                    onClick={() => handleNav('/auth')}
+                    className="w-full py-2.5 rounded-xl border border-slate-700 text-sm font-semibold text-slate-200"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => handleNav('/study-plans/new')}
+                    className="w-full py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-sm font-bold shadow-md"
+                  >
+                    Get Started
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="px-3 py-2 bg-[#111A2E] border border-white/5 rounded-xl mb-3">
+                  <p className="text-xs text-slate-400">Signed in as</p>
+                  <p className="text-sm font-semibold text-white truncate">{user.email}</p>
+                </div>
+                <button
+                  onClick={() => handleNav('/dashboard')}
+                  className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-800 text-sm font-medium flex items-center gap-2 text-slate-200"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-teal-400" />
                   Dashboard
                 </button>
                 <button
                   onClick={() => handleNav('/dashboard/routine')}
-                  className={`text-sm font-medium flex items-center gap-1.5 transition-colors ${
-                    currentPath === '/dashboard/routine'
-                      ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
-                      : 'text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400'
-                  }`}
+                  className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-800 text-sm font-medium flex items-center gap-2 text-slate-200"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  Daily Routine
+                  <CheckSquare className="w-4 h-4 text-emerald-400" />
+                  Daily Practice
                 </button>
                 <button
                   onClick={() => handleNav('/study-plans/new')}
-                  className={`text-sm font-medium flex items-center gap-1.5 transition-colors ${
-                    currentPath === '/study-plans/new'
-                      ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
-                      : 'text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400'
-                  }`}
+                  className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-800 text-sm font-medium flex items-center gap-2 text-slate-200"
                 >
-                  <PlusCircle className="w-4 h-4" />
-                  Create Plan
-                </button>
-              </>
-            )}
-          </div>
-
-          {/* Right Action Icons & Controls */}
-          <div className="hidden md:flex items-center gap-3">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2.5 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 dark:bg-slate-800 transition-colors focus:outline-none"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-
-            {/* Auth Buttons or User Dropdown */}
-            {!user ? (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleNav('/auth')}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                  Sign In
+                  <PlusCircle className="w-4 h-4 text-purple-400" />
+                  New Study Plan
                 </button>
                 <button
-                  onClick={() => handleNav('/auth')}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:opacity-95 text-white text-xs font-semibold shadow-md shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5"
+                  onClick={() => handleNav('/settings')}
+                  className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-800 text-sm font-medium flex items-center gap-2 text-slate-200"
                 >
-                  Get Started Free
+                  <SettingsIcon className="w-4 h-4 text-slate-400" />
+                  Settings
                 </button>
-              </div>
-            ) : (
-              <div className="relative">
                 <button
-                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-none"
+                  onClick={handleLogout}
+                  className="w-full text-left py-2.5 px-3 rounded-xl text-rose-400 hover:bg-rose-950/30 text-sm font-medium flex items-center gap-2"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-                    {userInitial}
-                  </div>
-                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                    {userName.split(' ')[0]}
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  <LogOut className="w-4 h-4" />
+                  Sign Out
                 </button>
-
-                {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800">
-                      <p className="text-xs text-slate-400">Signed in as</p>
-                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{user.email}</p>
-                    </div>
-
-                    <button
-                      onClick={() => handleNav('/dashboard')}
-                      className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2"
-                    >
-                      <LayoutDashboard className="w-4 h-4 text-indigo-500" />
-                      Dashboard
-                    </button>
-
-                    <button
-                      onClick={() => handleNav('/dashboard/routine')}
-                      className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2"
-                    >
-                      <Sparkles className="w-4 h-4 text-purple-500" />
-                      Daily Routine
-                    </button>
-
-                    <button
-                      onClick={() => handleNav('/study-plans/new')}
-                      className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2"
-                    >
-                      <PlusCircle className="w-4 h-4 text-emerald-500" />
-                      New Study Plan
-                    </button>
-
-                    <button
-                      onClick={() => handleNav('/settings')}
-                      className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2"
-                    >
-                      <SettingsIcon className="w-4 h-4 text-slate-400" />
-                      Settings
-                    </button>
-
-                    <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
-
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>
-
-          {/* Mobile hamburger button */}
-          <div className="flex md:hidden items-center gap-2">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 focus:outline-none"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="Toggle mobile menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 pt-3 pb-6 space-y-3">
-          {!user ? (
-            <div className="space-y-2">
-              <button
-                onClick={() => handleNav('/#how-it-works')}
-                className="w-full text-left py-2 text-sm font-medium text-slate-700 dark:text-slate-200"
-              >
-                How It Works
-              </button>
-              <button
-                onClick={() => handleNav('/#features')}
-                className="w-full text-left py-2 text-sm font-medium text-slate-700 dark:text-slate-200"
-              >
-                Features
-              </button>
-              <button
-                onClick={() => handleNav('/#faq')}
-                className="w-full text-left py-2 text-sm font-medium text-slate-700 dark:text-slate-200"
-              >
-                FAQ
-              </button>
-              <div className="pt-2 flex flex-col gap-2">
-                <button
-                  onClick={() => handleNav('/auth')}
-                  className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => handleNav('/auth')}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white text-sm font-semibold shadow-md"
-                >
-                  Get Started Free
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <div className="px-3 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl mb-3">
-                <p className="text-xs text-slate-400">Signed in as</p>
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{user.email}</p>
-              </div>
-              <button
-                onClick={() => handleNav('/dashboard')}
-                className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium flex items-center gap-2"
-              >
-                <LayoutDashboard className="w-4 h-4 text-indigo-500" />
-                Dashboard
-              </button>
-              <button
-                onClick={() => handleNav('/dashboard/routine')}
-                className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium flex items-center gap-2"
-              >
-                <Sparkles className="w-4 h-4 text-purple-500" />
-                Daily Routine
-              </button>
-              <button
-                onClick={() => handleNav('/study-plans/new')}
-                className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium flex items-center gap-2"
-              >
-                <PlusCircle className="w-4 h-4 text-emerald-500" />
-                Create New Plan
-              </button>
-              <button
-                onClick={() => handleNav('/settings')}
-                className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium flex items-center gap-2"
-              >
-                <SettingsIcon className="w-4 h-4 text-slate-400" />
-                Settings
-              </button>
-              <button
-                onClick={handleLogout}
-                className="w-full text-left py-2.5 px-3 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-sm font-medium flex items-center gap-2"
-              >
-                <LogOut className="w-4 h-4" />
-                Sign Out
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-    </nav>
+        )}
+      </nav>
+    </header>
   );
 };

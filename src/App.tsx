@@ -12,6 +12,10 @@ import { CreatePlanPage } from './components/planner/CreatePlanPage';
 import { PlanDetailPage } from './components/planner/PlanDetailPage';
 import { SettingsPage } from './components/settings/SettingsPage';
 import { RoutinePage } from './components/routine/RoutinePage';
+import { RoadmapPlannerPage } from './components/planner/RoadmapPlannerPage';
+import { NotesHub } from './components/notes/NotesHub';
+import { DailyPractice } from './components/practice/DailyPractice';
+import { AnimatedBackground } from './components/AnimatedBackground';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 function AppContent() {
@@ -76,6 +80,16 @@ function AppContent() {
         <RoutinePage navigate={navigate} />
       </ProtectedRoute>
     );
+  } else if (currentPath === '/roadmap') {
+    pageContent = (
+      <ProtectedRoute navigate={navigate}>
+        <RoadmapPlannerPage navigate={navigate} />
+      </ProtectedRoute>
+    );
+  } else if (currentPath === '/notes') {
+    pageContent = <NotesHub navigate={navigate} />;
+  } else if (currentPath === '/daily-practice') {
+    pageContent = <DailyPractice navigate={navigate} />;
   } else if (currentPath === '/study-plans/new') {
     pageContent = (
       <ProtectedRoute navigate={navigate}>
@@ -119,9 +133,10 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 transition-colors selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen flex flex-col text-slate-900 dark:text-slate-100 transition-colors selection:bg-indigo-500 selection:text-white relative">
+      <AnimatedBackground />
       <Navbar currentPath={currentPath} navigate={navigate} />
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         {pageContent}
       </main>
       <Footer navigate={navigate} />
