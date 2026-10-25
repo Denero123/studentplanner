@@ -39,7 +39,10 @@
     @apply border-border;
   }
   body {
-    @apply bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans;
+    @apply bg-[#F8FAFC] dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200;
+  }
+  .dark body {
+    background-image: radial-gradient(ellipse at top, rgba(30, 27, 75, 0.4) 0%, #0B0F19 50%, #0B0F19 100%);
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
@@ -47,7 +50,23 @@
 }
 
 .glass {
-  @apply bg-white/70 backdrop-blur-md border border-white/20;
+  @apply bg-white/80 dark:bg-[#111827]/80 backdrop-blur-md border border-slate-200/80 dark:border-white/[0.08];
+}
+
+.card-surface {
+  @apply bg-white/90 dark:bg-[#111827]/80 backdrop-blur-md border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:shadow-md dark:hover:border-indigo-500/40 dark:hover:bg-[#161F36]/90 transition-all duration-300;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:opacity-95 text-white font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 active:scale-[0.98] transition-all duration-200;
+}
+
+.btn-secondary {
+  @apply bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 active:scale-[0.98] transition-all;
+}
+
+.input-styled {
+  @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all outline-none;
 }
 
 .text-balance {

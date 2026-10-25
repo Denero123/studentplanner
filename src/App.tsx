@@ -5,9 +5,8 @@ import { ToastProvider } from './context/ToastContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
 import { LandingPage } from './components/landing/LandingPage';
-import { SignUpPage } from './components/auth/SignUpPage';
-import { LoginPage } from './components/auth/LoginPage';
-import { ForgotPasswordPage } from './components/auth/ForgotPasswordPage';
+import { AuthPage } from './components/auth/AuthPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { DashboardPage } from './components/dashboard/DashboardPage';
 import { CreatePlanPage } from './components/planner/CreatePlanPage';
 import { PlanDetailPage } from './components/planner/PlanDetailPage';
@@ -16,7 +15,7 @@ import { RoutinePage } from './components/routine/RoutinePage';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 function AppContent() {
-  const { user, isLoading } = useAuth();
+  const { loading } = useAuth();
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname || '/');
 
   // Sync route on popstate (browser back/forward)
@@ -30,7 +29,6 @@ function AppContent() {
 
   const navigate = (path: string) => {
     if (path.startsWith('/#')) {
-      // Handle hash anchor scroll
       const hash = path.substring(2);
       const element = document.getElementById(hash);
       if (element) {
@@ -46,61 +44,15 @@ function AppContent() {
     }
   };
 
-  // Protected route checker
-  const isProtectedRoute = (path: string) => {
+  if (loading) {
     return (
-      path === '/dashboard' ||
-      path === '/dashboard/routine' ||
-      path === '/study-plans/new' ||
-      path.startsWith('/study-plans/') ||
-      path === '/settings'
-    );
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0B0F19]">
         <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-8 h-8 animate-spin text-indigo-600" />
+          <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 dark:text-indigo-400" />
           <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
             Initializing StudyForge AI...
           </p>
         </div>
-      </div>
-    );
-  }
-
-  // Redirect unauthenticated user trying to access protected routes
-  if (!user && isProtectedRoute(currentPath)) {
-    return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
-        <Navbar currentPath={currentPath} navigate={navigate} />
-        <main className="flex-1 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-4 shadow-xl">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
-              <AlertCircle className="w-6 h-6" />
-            </div>
-            <h2 className="text-xl font-bold">Sign In Required</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Please sign in to access your personal study schedules and tracking tools.
-            </p>
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={() => navigate('/login')}
-                className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => navigate('/')}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold"
-              >
-                Home
-              </button>
-            </div>
-          </div>
-        </main>
-        <Footer navigate={navigate} />
       </div>
     );
   }
@@ -110,29 +62,45 @@ function AppContent() {
 
   if (currentPath === '/') {
     pageContent = <LandingPage navigate={navigate} />;
-  } else if (currentPath === '/signup') {
-    pageContent = <SignUpPage navigate={navigate} />;
-  } else if (currentPath === '/login') {
-    pageContent = <LoginPage navigate={navigate} />;
-  } else if (currentPath === '/forgot-password') {
-    pageContent = <ForgotPasswordPage navigate={navigate} />;
+  } else if (currentPath === '/auth' || currentPath === '/login' || currentPath === '/signup') {
+    pageContent = <AuthPage navigate={navigate} />;
   } else if (currentPath === '/dashboard') {
-    pageContent = <DashboardPage navigate={navigate} />;
+    pageContent = (
+      <ProtectedRoute navigate={navigate}>
+        <DashboardPage navigate={navigate} />
+      </ProtectedRoute>
+    );
   } else if (currentPath === '/dashboard/routine') {
-    pageContent = <RoutinePage navigate={navigate} />;
+    pageContent = (
+      <ProtectedRoute navigate={navigate}>
+        <RoutinePage navigate={navigate} />
+      </ProtectedRoute>
+    );
   } else if (currentPath === '/study-plans/new') {
-    pageContent = <CreatePlanPage navigate={navigate} />;
+    pageContent = (
+      <ProtectedRoute navigate={navigate}>
+        <CreatePlanPage navigate={navigate} />
+      </ProtectedRoute>
+    );
   } else if (currentPath.startsWith('/study-plans/')) {
     const planId = currentPath.replace('/study-plans/', '').split('?')[0].split('#')[0];
-    pageContent = <PlanDetailPage planId={planId} navigate={navigate} />;
+    pageContent = (
+      <ProtectedRoute navigate={navigate}>
+        <PlanDetailPage planId={planId} navigate={navigate} />
+      </ProtectedRoute>
+    );
   } else if (currentPath === '/settings') {
-    pageContent = <SettingsPage navigate={navigate} />;
+    pageContent = (
+      <ProtectedRoute navigate={navigate}>
+        <SettingsPage navigate={navigate} />
+      </ProtectedRoute>
+    );
   } else {
     // 404 Fallback
     pageContent = (
       <div className="min-h-[calc(100vh-14rem)] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-4 shadow-xl">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center mx-auto">
+        <div className="max-w-md w-full bg-white dark:bg-[#111827] p-8 rounded-3xl border border-slate-200 dark:border-white/[0.08] text-center space-y-4 shadow-xl">
+          <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-500/10 text-rose-600 flex items-center justify-center mx-auto border border-rose-500/20">
             <AlertCircle className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">Page Not Found</h2>
@@ -141,7 +109,7 @@ function AppContent() {
           </p>
           <button
             onClick={() => navigate('/')}
-            className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-md"
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 text-white text-xs font-semibold shadow-md"
           >
             Return to Homepage
           </button>
@@ -151,7 +119,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 transition-colors selection:bg-indigo-500 selection:text-white">
       <Navbar currentPath={currentPath} navigate={navigate} />
       <main className="flex-1">
         {pageContent}

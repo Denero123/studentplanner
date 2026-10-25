@@ -19,8 +19,7 @@ import {
   ArrowLeft,
   Info,
   Flame,
-  AlertCircle,
-  Mic
+  AlertCircle
 } from 'lucide-react';
 
 interface CreatePlanPageProps {
@@ -75,61 +74,7 @@ export const CreatePlanPage: React.FC<CreatePlanPageProps> = ({ navigate }) => {
   const [savedPlanId, setSavedPlanId] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  // Voice-to-Text State & Handlers
-  const [isListening, setIsListening] = useState(false);
-  const [voiceTranscript, setVoiceTranscript] = useState('');
 
-  const startVoiceRecording = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      toastError('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-      success('🎙️ Listening... Speak your academic goals, subject, and topics.');
-    };
-
-    recognition.onresult = (event: any) => {
-      const text = event.results[0][0].transcript;
-      setVoiceTranscript(text);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error('Speech recognition error', event.error);
-      setIsListening(false);
-      toastError('Voice recognition error or permission denied.');
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      if (voiceTranscript) {
-        parseAndFillFromVoice(voiceTranscript);
-      }
-    };
-
-    recognition.start();
-  };
-
-  const parseAndFillFromVoice = (text: string) => {
-    const lower = text.toLowerCase();
-    if (lower.length > 2) {
-      setSubject(text.slice(0, 40));
-      setAdditionalNotes(`Voice input: "${text}"`);
-      
-      const possibleTopics = text.split(/,|\band\b/).map(s => s.trim()).filter(s => s.length > 2 && s.toLowerCase() !== 'subject' && s.toLowerCase() !== 'study');
-      if (possibleTopics.length > 0) {
-        setTopics(prev => Array.from(new Set([...prev, ...possibleTopics.slice(0, 5)])));
-      }
-      success('✨ Voice input successfully transcribed and pre-filled!');
-    }
-  };
 
   // Minimum allowed date is tomorrow
   const minDate = new Date();
@@ -151,7 +96,7 @@ export const CreatePlanPage: React.FC<CreatePlanPageProps> = ({ navigate }) => {
       setGenerationStep(0);
       interval = setInterval(() => {
         setGenerationStep(prev => (prev < generationSteps.length - 1 ? prev + 1 : prev));
-      }, 1500);
+      }, 200);
     }
     return () => clearInterval(interval);
   }, [isGenerating]);
@@ -318,36 +263,7 @@ export const CreatePlanPage: React.FC<CreatePlanPageProps> = ({ navigate }) => {
           </div>
 
           <form onSubmit={handleGenerate} className="p-6 sm:p-8 space-y-7">
-            {/* Voice-to-Text Quick Fill Banner */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-500/15 to-indigo-500/15 border border-purple-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isListening ? 'bg-rose-500 text-white animate-pulse' : 'bg-purple-600 text-white shadow-md'}`}>
-                  <Mic className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                    {isListening ? 'Listening to your voice...' : 'Voice-to-Text Goal Dictation'}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {isListening ? 'Speak your subject, topics, and goals clearly now...' : 'Click to speak your study goals and have AI pre-fill this form.'}
-                  </p>
-                </div>
-              </div>
 
-              <button
-                type="button"
-                onClick={startVoiceRecording}
-                disabled={isListening}
-                className={`px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg transition-all flex items-center gap-2 whitespace-nowrap ${
-                  isListening
-                    ? 'bg-rose-600 text-white animate-bounce'
-                    : 'bg-purple-600 hover:bg-purple-500 text-white shadow-purple-500/25'
-                }`}
-              >
-                <Mic className="w-4 h-4" />
-                {isListening ? 'Listening...' : '🎙️ Speak Goal / Subject'}
-              </button>
-            </div>
 
             {/* 1. Subject */}
             <div>

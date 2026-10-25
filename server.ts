@@ -313,6 +313,103 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   });
 });
 
+// 3. Send Email OTP (Passwordless)
+app.post('/api/auth/send-otp', (req: Request, res: Response) => {
+  const { email } = req.body;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email.trim())) {
+    return res.status(400).json({ success: false, error: 'Please provide a valid email address.' });
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const db = loadDB();
+  let user = db.users.find(u => u.email.toLowerCase() === normalizedEmail);
+
+  if (!user) {
+    const newUser: DBUser = {
+      id: crypto.randomUUID(),
+      name: normalizedEmail.split('@')[0],
+      email: normalizedEmail,
+      password_hash: '',
+      salt: '',
+      email_verified: true,
+      created_at: new Date().toISOString(),
+    };
+    db.users.push(newUser);
+    user = newUser;
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const now = Date.now();
+  user.otp_code = otp;
+  user.otp_expires_at = now + 10 * 60 * 1000; // 10 minutes
+  user.otp_last_sent_at = now;
+  user.otp_attempts = 0;
+  saveDB(db);
+
+  console.log(`[StudyForge Auth] OTP code for ${normalizedEmail}: ${otp}`);
+
+  return res.json({
+    success: true,
+    message: `6-digit verification code sent to ${normalizedEmail}`,
+    data: {
+      email: normalizedEmail,
+      debugOtp: otp,
+    },
+  });
+});
+
+// 4. Verify Email OTP
+app.post('/api/auth/verify-otp', (req: Request, res: Response) => {
+  const { email, token } = req.body;
+  if (!email || !token) {
+    return res.status(400).json({ success: false, error: 'Email and 6-digit code are required.' });
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const cleanToken = token.toString().trim();
+  const db = loadDB();
+  const user = db.users.find(u => u.email.toLowerCase() === normalizedEmail);
+
+  if (!user || user.otp_code !== cleanToken) {
+    return res.status(400).json({ success: false, error: 'Invalid verification code. Please check and try again.' });
+  }
+
+  if (!user.otp_expires_at || Date.now() > user.otp_expires_at) {
+    return res.status(400).json({ success: false, error: 'Verification code has expired. Please request a new one.' });
+  }
+
+  user.otp_code = null;
+  user.otp_expires_at = null;
+  user.email_verified = true;
+
+  const sessionToken = crypto.randomBytes(32).toString('hex');
+  const session: DBSession = {
+    token: sessionToken,
+    user_id: user.id,
+    expires_at: Date.now() + 30 * 24 * 60 * 60 * 1000,
+    created_at: new Date().toISOString(),
+  };
+
+  db.sessions.push(session);
+  saveDB(db);
+
+  return res.json({
+    success: true,
+    message: 'Successfully authenticated via OTP!',
+    data: {
+      token: sessionToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        email_verified: true,
+        created_at: user.created_at,
+      },
+    },
+  });
+});
+
 // 5. Forgot Password & Reset
 app.post('/api/auth/forgot-password', (req: Request, res: Response) => {
   const { email } = req.body;

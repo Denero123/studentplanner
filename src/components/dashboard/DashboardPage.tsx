@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { BookingModal } from '../common/BookingModal';
 import { PomodoroTimer } from './PomodoroTimer';
+import { ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 
 interface DashboardPageProps {
   navigate: (path: string) => void;
@@ -42,6 +43,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'active' | 'completed'>('active');
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
   const [groupBySubject, setGroupBySubject] = useState<boolean>(false);
+  const [selectedRadialPlanId, setSelectedRadialPlanId] = useState<string>('');
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSeeding, setIsSeeding] = useState<boolean>(false);
@@ -49,6 +51,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ navigate }) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+
+  useEffect(() => {
+    if (plans.length > 0 && (!selectedRadialPlanId || !plans.some(p => p.id === selectedRadialPlanId))) {
+      const active = plans.find(p => (p.progress_percentage || 0) < 100) || plans[0];
+      setSelectedRadialPlanId(active.id);
+    }
+  }, [plans]);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -301,7 +310,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ navigate }) => {
           <button
             onClick={handleSeedDemo}
             disabled={isSeeding}
-            className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium transition-all shadow-sm flex items-center gap-1.5 focus:outline-none"
+            className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium transition-all shadow-sm flex items-center gap-1.5 focus:outline-none"
             title="Populate an instant sample study plan"
           >
             <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
@@ -388,6 +397,142 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ navigate }) => {
         </div>
       </div>
 
+      {/* ──────────────── Active Study Plan Radial Progress Widget ──────────────── */}
+      {plans.length > 0 && (() => {
+        const activeRadialPlan = plans.find(p => p.id === selectedRadialPlanId) || plans[0];
+        const radialProgress = activeRadialPlan ? (activeRadialPlan.progress_percentage || 0) : 0;
+        const radialData = [
+          {
+            name: 'Completed',
+            value: radialProgress,
+            fill: '#34d399',
+          },
+        ];
+        return (
+          <div className="bg-white dark:bg-[#0B0F19] rounded-3xl border border-slate-200 dark:border-indigo-500/20 p-6 shadow-sm dark:shadow-xl dark:shadow-indigo-500/5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-emerald-400" />
+                  Study Plan Completion Overview
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Visualizing task completion progress for your active study plan.
+                </p>
+              </div>
+
+              {plans.length > 1 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Select Plan:</span>
+                  <select
+                    value={selectedRadialPlanId}
+                    onChange={(e) => setSelectedRadialPlanId(e.target.value)}
+                    className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-indigo-500"
+                  >
+                    {plans.map(p => (
+                      <option key={p.id} value={p.id}>
+                        {p.title} ({p.subject})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+              <div className="flex flex-col items-center justify-center">
+                <div className="h-52 w-52 relative flex items-center justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadialBarChart
+                      cx="50%"
+                      cy="50%"
+                      innerRadius="72%"
+                      outerRadius="100%"
+                      barSize={14}
+                      data={radialData}
+                      startAngle={90}
+                      endAngle={-270}
+                    >
+                      <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                      <RadialBar
+                        background={{ fill: '#33415533' }}
+                        dataKey="value"
+                        cornerRadius={10}
+                      />
+                    </RadialBarChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                    <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                      {radialProgress}%
+                    </span>
+                    <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5">
+                      Completed
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="md:col-span-2 space-y-4">
+                {activeRadialPlan ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-0.5 rounded-md">
+                        {activeRadialPlan.subject}
+                      </span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        Target: {activeRadialPlan.deadline}
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+                      {activeRadialPlan.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
+                      {activeRadialPlan.summary || 'Comprehensive personalized learning curriculum.'}
+                    </p>
+
+                    <div className="grid grid-cols-3 gap-3 pt-2">
+                      <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <span className="text-[10px] uppercase font-semibold text-slate-400">Total Tasks</span>
+                        <p className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
+                          {activeRadialPlan.total_tasks || 0}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <span className="text-[10px] uppercase font-semibold text-slate-400">Finished</span>
+                        <p className="text-base font-extrabold text-emerald-500 dark:text-emerald-400 mt-0.5">
+                          {activeRadialPlan.completed_tasks || 0}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <span className="text-[10px] uppercase font-semibold text-slate-400">Remaining</span>
+                        <p className="text-base font-extrabold text-indigo-500 dark:text-indigo-400 mt-0.5">
+                          {Math.max(0, (activeRadialPlan.total_tasks || 0) - (activeRadialPlan.completed_tasks || 0))}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex items-center gap-3">
+                      <button
+                        onClick={() => navigate(`/study-plans/${activeRadialPlan.id}`)}
+                        className="px-4 py-2 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1.5"
+                      >
+                        <span>Open Plan Details</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-400">No active study plan selected.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* ──────────────── Pomodoro Focus Timer Section ──────────────── */}
       <div>
         <PomodoroTimer />
@@ -452,7 +597,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ navigate }) => {
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                     selectedSubject === 'All'
                       ? 'bg-emerald-400 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-750'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                 >
                   All Subjects ({basePlans.length})
@@ -466,7 +611,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ navigate }) => {
                       className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                         selectedSubject === subj
                           ? 'bg-emerald-400 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-750'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                       }`}
                     >
                       {subj} ({count})
