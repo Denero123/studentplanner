@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import { SITE_CONFIG } from '../../config/site';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { 
   Sparkles, 
-  Sun, 
-  Moon, 
   Menu, 
   X, 
   LogOut, 
-  User as UserIcon, 
   LayoutDashboard, 
   PlusCircle, 
   Settings as SettingsIcon,
   ChevronDown,
-  Terminal,
-  BookOpen,
-  FileText,
   Compass,
-  CheckSquare,
   ShoppingBag
 } from 'lucide-react';
 
@@ -29,7 +21,6 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   const { user, signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
@@ -51,8 +42,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
 
   return (
     <header className="sticky top-0 z-50 w-full flex flex-col">
-
-
       {/* Glassmorphic Navigation Bar */}
       <nav className="w-full bg-[#0D1322]/90 backdrop-blur-md border-b border-white/10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,10 +57,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-base font-extrabold tracking-tight text-white group-hover:text-purple-400 transition-colors leading-tight">
-                    StudyForge
+                    {SITE_CONFIG.name}
                   </span>
                   <span className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">
-                    MADE BY CYBER
+                    {SITE_CONFIG.credit}
                   </span>
                 </div>
               </button>
@@ -92,17 +81,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                   Dashboard
                 </button>
                 <button
-                  onClick={() => handleNav('/notes')}
-                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                    currentPath === '/notes'
-                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  Notes
-                </button>
-                <button
                   onClick={() => handleNav('/study-plans/new')}
                   className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                     currentPath === '/study-plans/new'
@@ -112,13 +90,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   Study Plans
-                </button>
-                <button
-                  onClick={() => handleNav(user ? '/dashboard' : '/auth')}
-                  className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-1.5"
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  Past Questions
                 </button>
                 <button
                   onClick={() => handleNav('/roadmap')}
@@ -131,31 +102,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                   <Compass className="w-3.5 h-3.5" />
                   Roadmaps
                 </button>
-                <button
-                  onClick={() => handleNav('/daily-practice')}
-                  className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                    currentPath === '/daily-practice'
-                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <CheckSquare className="w-3.5 h-3.5" />
-                  Daily Practice
-                </button>
               </div>
             </div>
 
             {/* Right Action Buttons */}
             <div className="hidden md:flex items-center gap-3">
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2.5 rounded-xl text-slate-400 hover:text-white bg-[#111A2E] border border-white/5 transition-colors focus:outline-none"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-cyan-400" />}
-              </button>
-
               {/* Bag / Profile Button */}
               <button
                 onClick={() => handleNav(user ? '/dashboard' : '/auth')}
@@ -212,19 +163,19 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                       </button>
 
                       <button
-                        onClick={() => handleNav('/dashboard/routine')}
-                        className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/80 flex items-center gap-2"
-                      >
-                        <CheckSquare className="w-4 h-4 text-emerald-400" />
-                        Daily Practice
-                      </button>
-
-                      <button
                         onClick={() => handleNav('/study-plans/new')}
                         className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/80 flex items-center gap-2"
                       >
                         <PlusCircle className="w-4 h-4 text-purple-400" />
                         New Study Plan
+                      </button>
+
+                      <button
+                        onClick={() => handleNav('/roadmap')}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/80 flex items-center gap-2"
+                      >
+                        <Compass className="w-4 h-4 text-cyan-400" />
+                        Roadmaps
                       </button>
 
                       <button
@@ -252,13 +203,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
 
             {/* Mobile hamburger button */}
             <div className="flex md:hidden items-center gap-2">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-xl text-slate-400 hover:text-white bg-[#111A2E] border border-white/5 focus:outline-none"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-cyan-400" />}
-              </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 rounded-xl text-slate-300 hover:text-white bg-[#111A2E] border border-white/5"
@@ -288,10 +232,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                   Study Plans
                 </button>
                 <button
-                  onClick={() => handleNav('/dashboard/routine')}
+                  onClick={() => handleNav('/roadmap')}
                   className="w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800"
                 >
-                  Daily Practice
+                  Roadmaps
                 </button>
                 <div className="pt-2 flex flex-col gap-2">
                   <button
@@ -322,18 +266,18 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                   Dashboard
                 </button>
                 <button
-                  onClick={() => handleNav('/dashboard/routine')}
-                  className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-800 text-sm font-medium flex items-center gap-2 text-slate-200"
-                >
-                  <CheckSquare className="w-4 h-4 text-emerald-400" />
-                  Daily Practice
-                </button>
-                <button
                   onClick={() => handleNav('/study-plans/new')}
                   className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-800 text-sm font-medium flex items-center gap-2 text-slate-200"
                 >
                   <PlusCircle className="w-4 h-4 text-purple-400" />
                   New Study Plan
+                </button>
+                <button
+                  onClick={() => handleNav('/roadmap')}
+                  className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-slate-800 text-sm font-medium flex items-center gap-2 text-slate-200"
+                >
+                  <Compass className="w-4 h-4 text-cyan-400" />
+                  Roadmaps
                 </button>
                 <button
                   onClick={() => handleNav('/settings')}

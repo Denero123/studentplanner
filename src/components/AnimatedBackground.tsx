@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export const AnimatedBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -34,17 +36,20 @@ export const AnimatedBackground: React.FC = () => {
     window.addEventListener('mouseleave', handleMouseLeave);
 
     // Particles setup (55 particles)
-    const particleCount = 55;
-    const colors = ['#22d3ee', '#10b981', '#a855f7', '#38bdf8', '#34d399'];
+    const particleCount = 50;
+    const isDark = theme === 'dark';
+    const colors = isDark 
+      ? ['#22d3ee', '#10b981', '#a855f7', '#38bdf8', '#34d399']
+      : ['#0d9488', '#4f46e5', '#06b6d4', '#7c3aed', '#059669'];
 
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: (Math.random() - 0.5) * 0.8,
+      vx: (Math.random() - 0.5) * 0.7,
+      vy: (Math.random() - 0.5) * 0.7,
       radius: Math.random() * 2.2 + 1.2,
       color: colors[Math.floor(Math.random() * colors.length)],
-      alpha: Math.random() * 0.5 + 0.3,
+      alpha: Math.random() * 0.4 + 0.3,
     }));
 
     // Animation Loop
@@ -62,7 +67,7 @@ export const AnimatedBackground: React.FC = () => {
         if (p.x < 0 || p.x > width) p.vx *= -1;
         if (p.y < 0 || p.y > height) p.vy *= -1;
 
-        // Mouse interaction (gentle glide away/toward cursor)
+        // Mouse interaction
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -78,10 +83,10 @@ export const AnimatedBackground: React.FC = () => {
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = isDark ? 10 : 4;
         ctx.shadowColor = p.color;
         ctx.fill();
-        ctx.shadowBlur = 0; // reset shadow
+        ctx.shadowBlur = 0;
 
         // Connect constellation lines
         for (let j = i + 1; j < particles.length; j++) {
@@ -94,7 +99,7 @@ export const AnimatedBackground: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            const lineAlpha = (1 - cdist / 120) * 0.25;
+            const lineAlpha = (1 - cdist / 120) * (isDark ? 0.25 : 0.15);
             ctx.strokeStyle = p.color;
             ctx.globalAlpha = lineAlpha;
             ctx.lineWidth = 0.8;
@@ -115,17 +120,25 @@ export const AnimatedBackground: React.FC = () => {
       window.removeEventListener('mouseleave', handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [theme]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none -z-10 w-full h-full overflow-hidden bg-[#070B12]">
+    <div className={`fixed inset-0 pointer-events-none -z-10 w-full h-full overflow-hidden ${
+      theme === 'dark' ? 'bg-[#070B12]' : 'bg-[#F8FAFC]'
+    } transition-colors duration-300`}>
       {/* HTML5 Canvas Particle & Constellation Layer */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
       {/* Flowing Aurora Neon Glow Blobs */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[150px] animate-float-orb-1" />
-      <div className="absolute top-1/2 right-1/4 w-[700px] h-[700px] bg-purple-600/15 rounded-full blur-[160px] animate-float-orb-2" />
-      <div className="absolute bottom-10 left-1/3 w-[550px] h-[550px] bg-cyan-500/10 rounded-full blur-[140px] animate-float-slow" />
+      <div className={`absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full blur-[150px] animate-float-orb-1 ${
+        theme === 'dark' ? 'bg-teal-500/10' : 'bg-teal-400/15'
+      }`} />
+      <div className={`absolute top-1/2 right-1/4 w-[700px] h-[700px] rounded-full blur-[160px] animate-float-orb-2 ${
+        theme === 'dark' ? 'bg-purple-600/15' : 'bg-indigo-400/15'
+      }`} />
+      <div className={`absolute bottom-10 left-1/3 w-[550px] h-[550px] rounded-full blur-[140px] animate-float-slow ${
+        theme === 'dark' ? 'bg-cyan-500/10' : 'bg-sky-400/15'
+      }`} />
     </div>
   );
 };
