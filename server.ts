@@ -831,10 +831,11 @@ CRITICAL INSTRUCTIONS:
 
     let generatedPlanData: any = null;
 
-    // Call Gemini API if API key exists
-    if (process.env.GEMINI_API_KEY) {
+    // Call AI intelligence API if API key exists
+    const apiKey = process.env.AI_API_KEY || process.env.GEMINI_API_KEY;
+    if (apiKey) {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
           model: 'gemini-3.8-flash',
           contents: prompt,
@@ -854,8 +855,8 @@ CRITICAL INSTRUCTIONS:
             }
           }
         }
-      } catch (geminiError: any) {
-        console.warn('Gemini API call failed or rate limited:', geminiError?.message);
+      } catch (aiError: any) {
+        console.warn('AI intelligence API call failed or rate limited:', aiError?.message);
       }
     }
 
@@ -945,9 +946,10 @@ Generate at least 8 to 12 realistic actionable tasks distributed across the ${we
 
     let planData: any = null;
 
-    if (process.env.GEMINI_API_KEY) {
+    const offeringApiKey = process.env.AI_API_KEY || process.env.GEMINI_API_KEY;
+    if (offeringApiKey) {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: offeringApiKey });
         const response = await ai.models.generateContent({
           model: 'gemini-3.8-flash',
           contents: prompt,
@@ -963,7 +965,7 @@ Generate at least 8 to 12 realistic actionable tasks distributed across the ${we
           }
         }
       } catch (e: any) {
-        console.warn('Gemini offering plan generation failed:', e?.message);
+        console.warn('AI offering plan generation failed:', e?.message);
       }
     }
 
@@ -1249,9 +1251,10 @@ app.post('/api/generate-routine', authMiddleware, async (req: AuthenticatedReque
     const { timetableText, timetableImage, wakeUpTime, bedtime, priorityTopics, studyStyle } = req.body;
     let routineData: any = null;
 
-    if (process.env.GEMINI_API_KEY) {
+    const routineApiKey = process.env.AI_API_KEY || process.env.GEMINI_API_KEY;
+    if (routineApiKey) {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: routineApiKey });
         const systemInstruction = `You are an expert academic advisor and autonomous daily routine scheduler.
 Analyze the student's timetable, wake-up time (${wakeUpTime || '06:30 AM'}), bedtime (${bedtime || '10:30 PM'}), priority topics (${priorityTopics || 'None'}), and study style (${studyStyle || 'morning'}).
 Return strict JSON with the following structure:
@@ -1318,8 +1321,8 @@ Timetable text/notes: ${timetableText || 'Standard university timetable'}`,
             }
           }
         }
-      } catch (gErr: any) {
-        console.warn('Gemini routine generation failed:', gErr?.message);
+      } catch (err: any) {
+        console.warn('AI routine generation failed:', err?.message);
       }
     }
 

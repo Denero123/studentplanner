@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useToast } from '../../context/ToastContext';
+import { generateAcademicRoadmap } from '../../services/aiService';
 import { 
   Sparkles, 
   Compass, 
@@ -131,223 +132,19 @@ export const RoadmapPlannerPage: React.FC<RoadmapPlannerPageProps> = ({ navigate
     }
 
     setIsGenerating(true);
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
     try {
-      if (apiKey) {
-        const { GoogleGenAI } = await import('@google/genai');
-        const ai = new GoogleGenAI({ apiKey });
-        
-        const prompt = `
-Generate a realistic, detailed step-by-step roadmap tailored specifically for:
-- Goal: "${goalText}"
-- Current Starting Level / Context: "${currentLevel || 'Beginner'}"
-- Category: "${goalType}" (e.g. Build Project, Submit Work, Learn a Skill)
-- Strict Duration / Timeline: "${timeAvailable}" (e.g., 3 Days, 1 Week, 3 Weeks, 3 Months)
-
-CRITICAL TIMELINE RULES:
-1. If Timeline is "3 Days": Structure exactly into 3 phases: "Day 1", "Day 2", "Day 3".
-2. If Timeline is "1 Week": Structure exactly into 3 high-intensity phases: "Days 1-2 (Foundation)", "Days 3-5 (Core Execution)", "Days 6-7 (Testing & Wrap-up)". NEVER generate 3 weeks of content.
-3. If Timeline is "3 Weeks": Break into "Week 1", "Week 2", "Week 3".
-4. If Timeline is "3 Months": Break into "Month 1", "Month 2", "Month 3".
-
-Return a valid JSON object matching this exact structure:
-{
-  "goal_title": "${goalText.trim()}",
-  "goal_type": "${goalType}",
-  "total_timeline": "${timeAvailable}",
-  "summary": "string",
-  "phases": [
-    {
-      "phase_number": number,
-      "title": "string",
-      "timeline": "string",
-      "description": "string",
-      "tasks": [
-        {
-          "id": "string",
-          "title": "string",
-          "duration": "string",
-          "badge": "Action Item" | "Review Check" | "Submit" | "Learning",
-          "resourceText": "string",
-          "completed": false
-        }
-      ]
-    }
-  ]
-}
-Ensure valid JSON only.`;
-
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: prompt,
-        });
-
-        const text = response.text || '';
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          const parsed = JSON.parse(jsonMatch[0]);
-          if (parsed && parsed.phases && Array.isArray(parsed.phases)) {
-            setRoadmap(parsed);
-            success('🗺️ AI Roadmap generated successfully!');
-            setIsGenerating(false);
-            return;
-          }
-        }
+      const generated = await generateAcademicRoadmap(goalText, goalType, currentLevel, timeAvailable);
+      if (generated && generated.phases) {
+        setRoadmap(generated);
+        success('🗺️ AI Roadmap generated successfully!');
       }
     } catch (err) {
-      console.warn('AI generation fallback to smart parser:', err);
-    }
-
-    // Fallback smart generator adapting strictly to selected timeline
-    setTimeout(() => {
-      let phases: RoadmapPhase[] = [];
-      const is3Days = timeAvailable.includes('3 Days');
-      const is1Week = timeAvailable.includes('1 Week');
-      const is3Months = timeAvailable.includes('3 Months');
-
-      if (is3Days) {
-        phases = [
-          {
-            phase_number: 1,
-            title: 'Day 1: Kickoff & Setup',
-            timeline: 'Day 1',
-            description: 'Define scope and configure immediate workspace requirements.',
-            tasks: [
-              { id: 'd1-1', title: `Initial scoping and requirement analysis for ${goalText}`, duration: '3 hrs', badge: 'Action Item', completed: false },
-              { id: 'd1-2', title: 'Set up tools and baseline structure', duration: '3 hrs', badge: 'Review Check', completed: false }
-            ]
-          },
-          {
-            phase_number: 2,
-            title: 'Day 2: Intensive Core Sprint',
-            timeline: 'Day 2',
-            description: 'Execute primary deliverables and core tasks.',
-            tasks: [
-              { id: 'd2-1', title: 'Draft core components or primary study modules', duration: '6 hrs', badge: 'Action Item', completed: false }
-            ]
-          },
-          {
-            phase_number: 3,
-            title: 'Day 3: Review & Submission',
-            timeline: 'Day 3',
-            description: 'Final quality check and submission handoff.',
-            tasks: [
-              { id: 'd3-1', title: 'Review output against rubric and finalize', duration: '3 hrs', badge: 'Submit', completed: false }
-            ]
-          }
-        ];
-      } else if (is1Week) {
-        phases = [
-          {
-            phase_number: 1,
-            title: 'Days 1-2: Foundation & Planning',
-            timeline: 'Days 1-2',
-            description: 'Core baseline study, requirement analysis, and initial environment setup.',
-            tasks: [
-              { id: 'w1-1', title: `Research and requirement drafting for ${goalText}`, duration: '4 hrs', badge: 'Action Item', completed: false },
-              { id: 'w1-2', title: 'Scaffold project or study outline', duration: '3 hrs', badge: 'Review Check', completed: false }
-            ]
-          },
-          {
-            phase_number: 2,
-            title: 'Days 3-5: Core Execution & Build',
-            timeline: 'Days 3-5',
-            description: 'Intensive drafting, building, or practical skill implementation.',
-            tasks: [
-              { id: 'w2-1', title: 'Execute primary modules and main sections', duration: '8 hrs', badge: 'Action Item', completed: false },
-              { id: 'w2-2', title: 'Self-assessment and progress checkpoint', duration: '3 hrs', badge: 'Review Check', completed: false }
-            ]
-          },
-          {
-            phase_number: 3,
-            title: 'Days 6-7: Testing & Wrap-up',
-            timeline: 'Days 6-7',
-            description: 'Final packaging, quality assurance checks, and submission.',
-            tasks: [
-              { id: 'w3-1', title: 'Final proofreading, debugging, and polish', duration: '4 hrs', badge: 'Review Check', completed: false },
-              { id: 'w3-2', title: 'Final submission sign-off', duration: '2 hrs', badge: 'Submit', completed: false }
-            ]
-          }
-        ];
-      } else if (is3Months) {
-        phases = [
-          {
-            phase_number: 1,
-            title: 'Month 1: Fundamentals & Core Mastery',
-            timeline: 'Month 1',
-            description: 'Deep dive into foundational principles and baseline concepts.',
-            tasks: [
-              { id: 'm1-1', title: 'Master fundamental theory and core curriculum', duration: '20 hrs', badge: 'Learning', completed: false },
-              { id: 'm1-2', title: 'Complete introductory milestone projects', duration: '15 hrs', badge: 'Action Item', completed: false }
-            ]
-          },
-          {
-            phase_number: 2,
-            title: 'Month 2: Advanced Application & Projects',
-            timeline: 'Month 2',
-            description: 'Transition into advanced techniques and realistic capstone implementation.',
-            tasks: [
-              { id: 'm2-1', title: 'Build advanced modules and practical applications', duration: '25 hrs', badge: 'Action Item', completed: false },
-              { id: 'm2-2', title: 'Mid-term evaluation and peer review', duration: '10 hrs', badge: 'Review Check', completed: false }
-            ]
-          },
-          {
-            phase_number: 3,
-            title: 'Month 3: Mastery, Portfolio & Capstone Review',
-            timeline: 'Month 3',
-            description: 'Final polish, comprehensive review, and final presentation.',
-            tasks: [
-              { id: 'm3-1', title: 'Complete capstone project or final certification', duration: '30 hrs', badge: 'Submit', completed: false }
-            ]
-          }
-        ];
-      } else {
-        // 3 Weeks Default
-        phases = [
-          {
-            phase_number: 1,
-            title: 'Week 1: Foundations & Setup',
-            timeline: 'Week 1',
-            description: 'Establish baseline requirements and initial setup.',
-            tasks: [
-              { id: '3w-1', title: `Scope out requirements for ${goalText}`, duration: '5 hrs', badge: 'Action Item', completed: false },
-              { id: '3w-2', title: 'Complete initial setup milestones', duration: '5 hrs', badge: 'Review Check', completed: false }
-            ]
-          },
-          {
-            phase_number: 2,
-            title: 'Week 2: Core Development & Study',
-            timeline: 'Week 2',
-            description: 'Intensive building and core execution phase.',
-            tasks: [
-              { id: '3w-3', title: 'Implement primary core deliverables', duration: '12 hrs', badge: 'Action Item', completed: false }
-            ]
-          },
-          {
-            phase_number: 3,
-            title: 'Week 3: Testing & Final Submission',
-            timeline: 'Week 3',
-            description: 'Quality checks, review, and final handoff.',
-            tasks: [
-              { id: '3w-4', title: 'Final testing, polish, and submission', duration: '6 hrs', badge: 'Submit', completed: false }
-            ]
-          }
-        ];
-      }
-
-      const generated: RoadmapResponse = {
-        goal_title: goalText.trim(),
-        goal_type: goalType,
-        total_timeline: timeAvailable,
-        summary: `Customized execution plan for "${goalText}" (${timeAvailable}) tailored to starting level: ${currentLevel}.`,
-        phases
-      };
-
-      setRoadmap(generated);
-      success('🗺️ AI Roadmap generated successfully!');
+      console.error('Roadmap generation error:', err);
+      toastError('Failed to generate roadmap. Please try again.');
+    } finally {
       setIsGenerating(false);
-    }, 600);
+    }
   };
 
   const totalTasks = roadmap.phases.reduce((acc, p) => acc + p.tasks.length, 0);
